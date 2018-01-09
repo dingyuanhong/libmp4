@@ -44,10 +44,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <arpa/inet.h>
+
 #include <time.h>
 
 #include <libmp4.h>
+#include "mp4_demux_test.h"
 
 
 #define DATE_SIZE 23

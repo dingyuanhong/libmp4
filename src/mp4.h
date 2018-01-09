@@ -58,7 +58,7 @@
 #endif /* !_WIN32 */
 
 #include <libmp4.h>
-#include <futils/futils.h>
+#include "mp4_os.h"
 
 #include "mp4_log.h"
 
