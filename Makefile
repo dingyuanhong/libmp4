@@ -1,5 +1,4 @@
 CC = gcc
-CXX = g++
 AR = ar
 RM = rm -rf
 
@@ -16,7 +15,7 @@ SRCS += $(wildcard $(SRC_PATH)/*.c)
 OBJS := $(SRCS:.c=.o)
 
 MODULE_OBJS := $(MODULES:.c=.o)
-_OBJS=$(MODULE_OBJS)
+_OBJS=$(MODULE_OBJS) test/mp4_demux_test.o
 _TARGET=mp4_demux_test
 
 
@@ -32,6 +31,7 @@ INCLUDE_PATH :=.
 LIBRARY_PATH :=
 
 INCLUDE_PATH += /usr/include
+INCLUDE_PATH += ./include
 LIBRARY_PATH += $(MOULE_LIBRARY_PATH)
 
 
@@ -80,11 +80,11 @@ $(warning $(OBJS))
 #操作命令
 all:clean build
 
-$(OBJS):%.o:%.cpp
-	$(CXX) $(CFLAGS) -c $^ -o $@
+$(OBJS):%.o:%.c
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 build_target:$(_OBJS)
-	$(CXX) $(LFLAGS) -o $(_TARGET) $(_OBJS) $(LDFLAGS)
+	$(CC) $(LFLAGS) -o $(_TARGET) $(_OBJS) $(LDFLAGS)
 
 build:build_target
 	$(RM) $(OBJS)
