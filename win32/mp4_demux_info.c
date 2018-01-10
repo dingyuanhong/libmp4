@@ -51,6 +51,12 @@
 #include <mp4.h>
 #include "mp4_demux_info.h"
 
+#ifdef USE_BOOL
+#define bool char
+#define true 1
+#define false 0
+#endif
+
 typedef struct VodFileInfo
 {
 	int Duration;    /* 点播文件总时长 单位:ms */
@@ -122,13 +128,13 @@ static int mp4_demux_get_tracks_video(struct mp4_demux *demux, VODFileInfo_SRUT 
 	return -1;
 }
 
-BOOL Vod_GetInfo(char *Mp4FileName, VODFileInfo_SRUT *pInfo)
+bool Vod_GetInfo(char *Mp4FileName, VODFileInfo_SRUT *pInfo)
 {
 	struct mp4_demux *demux = NULL;
 	demux = mp4_demux_open(Mp4FileName);
 	if (demux == NULL) {
 		fprintf(stderr, "mp4_demux_open() failed\n");
-		return FALSE;
+		return false;
 	}
 	else {
 		VODFileInfo_SRUT vodFileInfo;
@@ -144,11 +150,11 @@ BOOL Vod_GetInfo(char *Mp4FileName, VODFileInfo_SRUT *pInfo)
 			{
 				*pInfo = vodFileInfo;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 #ifdef MAIN_TEST
@@ -159,8 +165,8 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 	VODFileInfo_SRUT pInfo;
-	BOOL ret = Vod_GetInfo(argv[1],&pInfo);
-	if (ret == TRUE)
+	bool ret = Vod_GetInfo(argv[1],&pInfo);
+	if (ret == true)
 	{
 		printf("\n");
 		printf("  Duration=%d\n",

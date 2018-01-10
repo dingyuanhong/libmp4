@@ -9,18 +9,25 @@ MODULES :=
 TARGET :=
 #源文件
 MODULES += $(wildcard $(SRC_PATH)/src/*.c)
+MODULES += $(wildcard $(SRC_PATH)/*.c)
 SRCS += $(MODULES)
-SRCS += $(wildcard $(SRC_PATH)/*.c)
 #中间文件
 OBJS := $(SRCS:.c=.o)
+TARGET = libmp4.a
 
 MODULE_OBJS := $(MODULES:.c=.o)
-_OBJS=$(MODULE_OBJS) test/mp4_demux_test.o
-_TARGET=mp4_demux_test
+OBJ_TEST=win32/mp4_demux_info.o
+OBJS_TEST=$(MODULE_OBJS) $(OBJ_TEST)
+TARGET_TEST=mp4_demux_test
 
+OBJ_INFO=win32/mp4_demux_info.o
+OBJS_INFO=$(MODULE_OBJS) $(OBJ_INFO)
+TARGET_INFO=mp4_demux_info
+
+ALL_OBJS=$(OBJS) $(OBJS_TEST) $(OBJ_INFO)
 
 #动态库
-LIBS := stdc++ pthread
+LIBS := pthread
 
 #模块库文件
 MOULE_LIBRARY_PATH = /usr/lib/ /usr/local/lib/
@@ -32,8 +39,12 @@ LIBRARY_PATH :=
 
 INCLUDE_PATH += /usr/include
 INCLUDE_PATH += ./include
+INCLUDE_PATH += ./src
+INCLUDE_PATH += ./test
+INCLUDE_PATH += ./win32
+INCLUDE_PATH += ../include
 LIBRARY_PATH += $(MOULE_LIBRARY_PATH)
-
+LIBRARY_PATH += ./
 
 RELEASE = 1
 BITS =
@@ -42,7 +53,7 @@ BITS =
 #	CFLAGS += -D_DEBUG -O0 -g -DDEBUG=1
 #endif
 
-CFLAGS = -Wall -std=c++11
+CFLAGS = -Wall -DMAIN_TEST -DUSE_BOOL
 LFLAGS =
 
 #头文件
@@ -80,15 +91,21 @@ $(warning $(OBJS))
 #操作命令
 all:clean build
 
-$(OBJS):%.o:%.c
+$(ALL_OBJS):%.o:%.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-build_target:$(_OBJS)
-	$(CC) $(LFLAGS) -o $(_TARGET) $(_OBJS) $(LDFLAGS)
+build_static:$(OBJS)
+	$(AR) -cru $(TARGET) $(OBJS)
 
-build:build_target
-	$(RM) $(OBJS)
+build_test:build_static $(OBJ_TEST)
+	$(CC) $(CFLAGS) $(LFLAGS) -o $(TARGET_TEST) $(OBJ_TEST) -lmp4 $(LDFLAGS)
+
+build_info:build_static $(OBJ_INFO)
+	$(CC) $(CFLAGS) $(LFLAGS) -o $(TARGET_INFO) $(OBJ_INFO) -lmp4 $(LDFLAGS)
+	
+build:build_test build_info
+	$(RM) $(ALL_OBJS)
 
 clean:
 	echo $(SRCS)
-	$(RM) $(OBJS) $(_TARGET)
+	$(RM) $(ALL_OBJS)
