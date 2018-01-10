@@ -1,5 +1,7 @@
-CC = gcc
-AR = ar
+CORSS-PREFIX =
+SYSROOT =
+CC = $(CORSS-PREFIX)gcc
+AR = $(CORSS-PREFIX)ar
 RM = rm -rf
 
 #原始目录
@@ -30,19 +32,18 @@ ALL_OBJS=$(OBJS) $(OBJS_TEST) $(OBJ_INFO)
 LIBS := pthread
 
 #模块库文件
-MOULE_LIBRARY_PATH = /usr/lib/ /usr/local/lib/
+MOULE_LIBRARY_PATH = $(SYSROOT)/usr/lib/ $(SYSROOT)/usr/local/lib/
 
 #头文件路径
 INCLUDE_PATH :=.
 #动态库路径
 LIBRARY_PATH :=
 
-INCLUDE_PATH += /usr/include
+INCLUDE_PATH += $(SYSROOT)/usr/include
 INCLUDE_PATH += ./include
 INCLUDE_PATH += ./src
 INCLUDE_PATH += ./test
 INCLUDE_PATH += ./win32
-INCLUDE_PATH += ../include
 LIBRARY_PATH += $(MOULE_LIBRARY_PATH)
 LIBRARY_PATH += ./
 
@@ -108,4 +109,4 @@ build:build_test build_info
 
 clean:
 	echo $(SRCS)
-	$(RM) $(ALL_OBJS)
+	$(RM) $(ALL_OBJS) $(TARGET) $(TARGET_TEST) $(TARGET_INFO)
